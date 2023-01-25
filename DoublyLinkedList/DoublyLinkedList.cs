@@ -1,13 +1,27 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DataStructures.LinkedList.DoublyLinkedList
 {
-    public class DoublyLinkedList<T>
+    public class DoublyLinkedList<T> : IEnumerable
     {
         public DoublyLinkedListNode<T> Head { get; set; }
         public DoublyLinkedListNode<T> Tail { get; set; }
+        public DoublyLinkedList()
+        {
+
+        }
+
+        public DoublyLinkedList(IEnumerable<T> collection)
+        {
+            foreach (var item in collection)
+            {
+                AddLast(item);
+            }
+        }
+
         private bool isHeadNull => Head == null;
         private bool isTailNull => Tail == null;
         public void AddFirst(T value)
@@ -131,6 +145,96 @@ namespace DataStructures.LinkedList.DoublyLinkedList
                 refNode.Prev = newNode;
                 refNode.Next = null;
 
+            }
+        }
+
+        public List<DoublyLinkedListNode<T>> GetAllNodes()
+        {
+            var list = new List<DoublyLinkedListNode<T>>();
+            var current = Head;
+
+            while (current != null)
+            {
+                list.Add(current);
+                current = current.Next;
+            }
+            return list;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return GetAllNodes().GetEnumerator();
+        }
+
+        public void RemoveFirst()
+        {
+            if (isHeadNull)
+                throw new Exception("");
+
+            if (Head == Tail)
+            {
+                Head = null;
+                Tail = null;
+            }
+            else
+            {
+                Head = Head.Next;
+                Head.Prev = null;
+            }
+        }
+        public void RemoveLast()
+        {
+            if (isTailNull)
+                throw new Exception("Empty List");
+
+            if (Tail == Head)
+            {
+                Head = null;
+                Tail = null;
+            }
+            else
+            {
+                Tail.Prev.Next = null;
+                Tail = Tail.Prev;
+            }
+        }
+        public void Delete(T value)
+        {
+            if (isHeadNull)
+                throw new Exception("Empty List");
+
+            if (Head == Tail)
+            {
+                if (Head.Value.Equals(value))
+                {
+                    RemoveFirst();
+                }
+                return;
+            }
+
+            var current = Head;
+            while (current != null)
+            {
+                if (current.Value.Equals(value))
+                {
+                    if (current.Prev == null)
+                    {
+                        current.Next.Prev = null;
+                        Head = current.Next;
+                    }
+                    else if (current.Next == null)
+                    {
+                        current.Prev.Next = null;
+                        Tail = current.Prev;
+                    }
+                    else
+                    {
+                        current.Prev.Next = current.Next;
+                        current.Next.Prev = current.Prev;
+                    }
+                    break;
+                }
+                current = current.Next;
             }
         }
     }
