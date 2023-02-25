@@ -48,7 +48,12 @@ namespace DataStructures.Tree.BST
                     }
                     else
                     {// Right Subtree
-
+                        current = current.Right;
+                        if (current == null)
+                        {
+                            parent.Right = newNode;
+                            break;
+                        }
                     }
                 }
             }
